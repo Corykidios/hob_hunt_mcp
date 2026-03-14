@@ -1,12 +1,14 @@
 You come to in a strange, white room (black if you dig dark mode, I suppose), and before you can even chance a glance at wherever the fuck you even are, you feel a sharp little tug at the back of a pant leg (yes, you are wearing pants, and yes, you found them on the ground at Ross, and yes, you tell all of your friends that the bed bugs it brought along aren't even that big of a deal anymore).
 
-You whirl around but must quickly look down to see a, like, a little weird thing… like… It is then that you cast your gaze up and right to light upon a GitHub profile picture, and yeah, it's like that. A Hob. Probably the freaking cutest one that ever did live, too. It chirps out a yip or two (and perhaps even a hoot and a holler if you're feeling adventurous), "Ἔξω ἐμὸς θάλαμος!" Great. It's speaking in the tongues of demons, no doubt, and you're probably cursed.
+You whirl around but must quickly look down to see a, like, a little weird thing… like… It is then that you cast your gaze up and and a little to the left to light upon a GitHub profile picture, and yeah, it's like that. A Hob. Probably the freaking cutest one that ever did live, too. It chirps out a yip or two (and perhaps even a hoot and a holler if you're feeling adventurous), "Ἔξω ἐμὸς θάλαμος!" Great. It's speaking in the tongues of demons, no doubt, and you're probably cursed.
 
-As your thoughts drift towards how excited you'll be to share this experience with the bed bugs back home, the little shit chimps into your ankle before scurrying off down a hole that I intended to be there all along, you're just bad at looking at stuff. And back out he pops, waddling your way with a scroll that looms over his two foot frame, with which he smacks you a few times before handing it over.
+As your thoughts drift towards how excited you'll be to share this experience with the bed bugs back home, the little shit chomps into your ankle before scurrying off down a hole that I intended to be there all along, really, you just don't appreciate all the care and forethought I put into this nondescript white room and its glorious hole, oh, the glory of that hole, and then back out he pops, waddling your way with his squat little arms wrapped around a scroll that looms over his itty bitty two foot frame, with which he smacks you a few times before handing it over.
 
 A ghostly voice creeps forth out of the hole, I guess, and you can barely make out its haunted command, "Read… Me… Reeeeaaaadmeeeeee…"
 
-Yeah, you abused your poor aching eyes through all this weird shit just to find that this intro is absolutely unnecessary, and now that fucking Hob has somehow stolen your burgundy dress-for-less big-boy britches. You wonder if you'll ever see Bill and Boogity Bed Bug again and hope the left pocket treats them well before you unfurl the scroll.
+Yeah, you abused your poor aching eyes through all this weird shit just to find that this intro is absolutely unnecessary, and now that fucking Hob has somehow stolen your burgundy dress-for-less big-boy britches.
+
+You wonder if you'll ever see Bill and Boogity Bed Bug again and hope the left pocket treats them well before you unfurl the surprisingly unremarkable README scroll.
 
 ---
 
@@ -20,8 +22,12 @@ Three tools. One browser process. No redundancy.
 
 ## Tools
 
-### `hob_search`
-Execute one or more Google searches in parallel. Provide an array of queries and receive structured JSON results — titles, links, and snippets — for all of them at once.
+What's that? Your g-search homie-fetch tools are evolving?!
+And into the exact same things with silly names, no less! On the shoulders of giants, we stand, damnit!
+1. fetch-url became "hob_site"
+2. fetch-urls became "hob_sites"
+3. search became "hob_search".
+4. we don't talk about that one.
 
 ### `hob_site`
 Fetch the content of a single web page. Because it uses a real Playwright browser under the hood, it handles JavaScript-rendered content, redirects, and anti-bot pages that would stump a plain HTTP request. Content is returned as Markdown by default, with optional Readability extraction to strip away navigation, ads, and other noise.
@@ -29,7 +35,10 @@ Fetch the content of a single web page. Because it uses a real Playwright browse
 ### `hob_sites`
 The same as `hob_site`, but for multiple URLs at once. Pages are fetched in parallel and returned as a single combined document.
 
-A fourth utility tool, `browser_install`, is also included for first-time setup.
+### `hob_search`
+Execute one or more Google searches in parallel. Provide an array of queries and receive structured JSON results — titles, links, and snippets — for all of them at once.
+
+The hob scurries back out wearing a pot on his head and sporting an old-timey gramophone, which, upon being cranked, groans forth, "A fourth utility tool, `bed_bug_burgundy_big_boy_britches_browser_install`, is also included for first-time setup, and it is not named cleverly because I absolutely forgot about it. I blame both Claude and the government."
 
 ---
 
@@ -53,7 +62,7 @@ npm install
 npm run install-browser
 ```
 
-Or let the MCP agent call `browser_install` for you on first use.
+Or let the MCP agent call `bed_bug_burgundy_big_boy_britches_browser_install` for you on first use.
 
 ### 3. Build
 
@@ -101,8 +110,7 @@ Pass `--debug` to show the browser window — useful when a CAPTCHA needs solvin
 |-----------|------|---------|-------------|
 | `queries` | `string[]` | *(required)* | Search queries to run in parallel |
 | `limit` | `number` | `10` | Max results per query (up to 100) |
-| `timeout` | `number` | `60000` | Page-load timeout in ms |
-| `noSaveState` | `boolean` | `false` | Do not persist browser state between calls |
+| `timeout` | `number` | `30000` | Page-load timeout in ms |
 | `locale` | `string` | `"en-US"` | BCP-47 locale for results |
 | `debug` | `boolean` | `false` | Show browser window |
 
@@ -141,7 +149,7 @@ Accepts all the same parameters as `hob_site`, plus:
 
 ---
 
-### `browser_install`
+### `bed_bug_burgundy_big_boy_britches_browser_install`
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
@@ -182,4 +190,4 @@ This project is built directly on the shoulders of two excellent open-source MCP
 - **[g-search-mcp](https://github.com/jae-jae/g-search-mcp)** — the Google search tool that `hob_search` is derived from
 - **[fetcher-mcp](https://github.com/jae-jae/fetcher-mcp)** — the Playwright fetch server that `hob_site` and `hob_sites` are derived from
 
-Both are well-designed, well-documented, and actively maintained. If you find value in `hob_hunt_mcp`, please consider starring those original repositories. The work here would not exist without them.
+Both are well-designed, well-documented, and actively maintained. If you find value in `hob_hunt_mcp`, please consider starring those original repositories. The work here would not exist without them as I have no idea how to even make these damn things.
