@@ -38,7 +38,9 @@ The same as `hob_site`, but for multiple URLs at once. Pages are fetched in para
 ### `hob_search`
 Execute one or more Google searches in parallel. Provide an array of queries and receive structured JSON results — titles, links, and snippets — for all of them at once.
 
-The hob scurries back out wearing a pot on his head and sporting an old-timey gramophone, which, upon being cranked, groans forth, "A fourth utility tool, `bed_bug_burgundy_big_boy_britches_browser_install`, is also included for first-time setup, and it is not named cleverly because I absolutely forgot about it. I blame both Claude and the government."
+The hob scurries back out wearing a pot on his head and sporting an old-timey gramophone, which, upon being cranked, groans forth, "A fourth utility tool, `browser_install`, is also included for first-time setup, and it is not named cleverly because I absolutely forgot about it. I blame both Claude and the government."
+
+(EDIT: GREAT NEWS EVERYBODY, THE TOOL HAS BEEN RENAMED TO `bed_bug_burgundy_big_boy_britches_browser_install`!)
 
 ---
 
