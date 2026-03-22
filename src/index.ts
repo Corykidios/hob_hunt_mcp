@@ -1,17 +1,15 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { setGlobalDebug, closeBrowser } from "./browser.js";
-import { registerHobSearch } from "./tools/search.js";
-import { registerHobSite, registerHobSites, registerBrowserInstall } from "./tools/fetch.js";
+import { registerHuntSite } from "./tools/site.js";
+import { registerHuntSearch } from "./tools/search.js";
 
 // ---------------------------------------------------------------------------
 // CLI flags
 // ---------------------------------------------------------------------------
 
 const args = process.argv.slice(2);
-const debugMode = args.includes("--debug");
-
-if (debugMode) {
+if (args.includes("--debug")) {
   setGlobalDebug(true);
 }
 
@@ -21,13 +19,11 @@ if (debugMode) {
 
 const server = new McpServer({
   name: "hob_hunt_mcp",
-  version: "1.0.0",
+  version: "2.0.0",
 });
 
-registerHobSearch(server);
-registerHobSite(server);
-registerHobSites(server);
-registerBrowserInstall(server);
+registerHuntSite(server);
+registerHuntSearch(server);
 
 // ---------------------------------------------------------------------------
 // Graceful shutdown
@@ -48,7 +44,7 @@ process.on("SIGTERM", shutdown);
 async function main(): Promise<void> {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  process.stderr.write("hob_hunt_mcp running (stdio)\n");
+  process.stderr.write("hob_hunt_mcp v2 running (stdio) — 2 tools: hunt_site, hunt_search\n");
 }
 
 main().catch((err: unknown) => {
