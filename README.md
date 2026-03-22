@@ -1,52 +1,33 @@
-You come to in a strange, white room (black if you dig dark mode, I suppose), and before you can even chance a glance at wherever the fuck you even are, you feel a sharp little tug at the back of a pant leg (yes, you are wearing pants, and yes, you found them on the ground at Ross, and yes, you tell all of your friends that the bed bugs it brought along aren't even that big of a deal anymore).
-
-You whirl around but must quickly look down to see a, like, a little weird thing… like… It is then that you cast your gaze up and and a little to the left to light upon a GitHub profile picture, and yeah, it's like that. A Hob. Probably the freaking cutest one that ever did live, too. It chirps out a yip or two (and perhaps even a hoot and a holler if you're feeling adventurous), "Ἔξω ἐμὸς θάλαμος!" Great. It's speaking in the tongues of demons, no doubt, and you're probably cursed.
-
-As your thoughts drift towards how excited you'll be to share this experience with the bed bugs back home, the little shit chomps into your ankle before scurrying off down a hole that I intended to be there all along, really, you just don't appreciate all the care and forethought I put into this nondescript white room and its glorious hole, oh, the glory of that hole, and then back out he pops, waddling your way with his squat little arms wrapped around a scroll that looms over his itty bitty two foot frame, with which he smacks you a few times before handing it over.
-
-A ghostly voice creeps forth out of the hole, I guess, and you can barely make out its haunted command, "Read… Me… Reeeeaaaadmeeeeee…"
-
-Yeah, you abused your poor aching eyes through all this weird shit just to find that this intro is absolutely unnecessary, and now that fucking Hob has somehow stolen your burgundy dress-for-less big-boy britches.
-
-You wonder if you'll ever see Bill and Boogity Bed Bug again and hope the left pocket treats them well before you unfurl the surprisingly unremarkable README scroll.
-
----
-
 # hob_hunt_mcp
 
 A unified MCP server for web search and page fetching, built on Playwright.
 
-Three tools. One browser process. No redundancy.
+Two tools. One browser process. No redundancy.
 
 ---
 
 ## Tools
 
-What's that? Your g-search homie-fetch tools are evolving?!
-And into the exact same things with silly names, no less! On the shoulders of giants, we stand, damnit!
-1. fetch-url became "hob_site"
-2. fetch-urls became "hob_sites"
-3. search became "hob_search".
-4. we don't talk about that one.
+### `hunt_site`
 
-### `hob_site`
-Fetch the content of a single web page. Because it uses a real Playwright browser under the hood, it handles JavaScript-rendered content, redirects, and anti-bot pages that would stump a plain HTTP request. Content is returned as Markdown by default, with optional Readability extraction to strip away navigation, ads, and other noise.
+Fetch one or more web pages using a stealth Playwright browser. Handles JavaScript-rendered content, redirects, anti-bot detection, and lazy-loaded content. Single URL or many — always pass an array.
 
-### `hob_sites`
-The same as `hob_site`, but for multiple URLs at once. Pages are fetched in parallel and returned as a single combined document.
+Two modes:
 
-### `hob_search`
-Execute one or more Google searches in parallel. Provide an array of queries and receive structured JSON results — titles, links, and snippets — for all of them at once.
+- **fetch** *(default)* — Return page content as clean Markdown (or raw HTML).
+- **map** — Return a JSON list of all URLs discovered on the page. Useful for site exploration before you decide what to fetch.
 
-The hob scurries back out wearing a pot on his head and sporting an old-timey gramophone, which, upon being cranked, groans forth, "A fourth utility tool, `browser_install`, is also included for first-time setup, and it is not named cleverly because I absolutely forgot about it. I blame both Claude and the government."
+Set `pages` greater than 1 to follow same-domain links breadth-first, up to that many total pages — a lightweight site crawl without any extra dependencies.
 
-(EDIT: GREAT NEWS EVERYBODY, THE TOOL HAS BEEN RENAMED TO `bed_bug_burgundy_big_boy_britches_browser_install`!)
+Results for the same URL and options are cached in memory for the session (5-minute TTL), so repeated fetches inside a single agent run are instant.
 
----
+### `hunt_search`
 
-## Why a unified server?
+Perform one or more Google searches in parallel using a stealth browser with human-like navigation and persistent session state. Pass multiple queries at once and get all results back in a single structured JSON response.
 
-`hob_search` and the fetch tools share the same Playwright Chromium dependency. Running them as separate servers means two browser processes. Running them together means one — and the result is leaner, faster, and tidier in your MCP configuration.
+Set `fetchTopN` to automatically fetch the content of the top N result pages per query and append it to the response — search and read in one shot. Fetched pages are always sandboxed in `EXTERNAL CONTENT` delimiters.
+
+On first run against a fresh IP, Google may show a CAPTCHA. Run the warmup script once (see below) to seed a valid session file — all future headless searches use it automatically.
 
 ---
 
@@ -54,27 +35,35 @@ The hob scurries back out wearing a pot on his head and sporting an old-timey gr
 
 ### 1. Install dependencies
 
-```bash
+```
 npm install
 ```
 
 ### 2. Install the Playwright browser
 
-```bash
+```
 npm run install-browser
 ```
 
-Or let the MCP agent call `bed_bug_burgundy_big_boy_britches_browser_install` for you on first use.
-
 ### 3. Build
 
-```bash
+```
 npm run build
 ```
 
-### 4. Configure in Claude Desktop
+### 4. Warm up the search session (first time only)
 
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+This opens a visible browser window and runs a real Google search to seed the persistent session file. Do it once — all headless searches after this use the saved session.
+
+```
+node test/warmup_search.mjs
+```
+
+If Google shows a CAPTCHA in the browser window, solve it manually. The script waits up to two minutes, then saves the session and closes.
+
+### 5. Configure in your MCP client
+
+**Claude Desktop** — `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -87,9 +76,7 @@ npm run build
 }
 ```
 
-### 5. Debug mode
-
-Pass `--debug` to show the browser window — useful when a CAPTCHA needs solving:
+**Debug mode** (opens visible browser — useful for diagnosing CAPTCHA or inspecting pages):
 
 ```json
 {
@@ -106,57 +93,58 @@ Pass `--debug` to show the browser window — useful when a CAPTCHA needs solvin
 
 ## Tool Reference
 
-### `hob_search`
+### `hunt_site`
 
 | Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
+|---|---|---|---|
+| `urls` | `string[]` | *(required)* | URLs to fetch. Multiple URLs are fetched in parallel. |
+| `mode` | `string` | `"fetch"` | `fetch` = return content; `map` = return discovered URLs |
+| `pages` | `number` | `1` | Max pages to crawl per starting URL following same-domain links (1–20) |
+| `timeout` | `number` | `30000` | Page-load timeout in ms |
+| `waitUntil` | `string` | `"load"` | Navigation signal: `load`, `domcontentloaded`, `networkidle`, `commit` |
+| `extractContent` | `boolean` | `true` | Strip navigation/ads via Readability; return only main content |
+| `maxLength` | `number` | `0` | Truncate output to this many characters (0 = no limit) |
+| `returnHtml` | `boolean` | `false` | Return raw HTML instead of Markdown |
+| `selector` | `string` | `""` | CSS selector — extract only matching elements (empty = full page) |
+| `waitForSelector` | `string` | `""` | Wait for this CSS selector to appear before extracting |
+| `scrollToBottom` | `boolean` | `false` | Auto-scroll to trigger lazy-loaded content |
+| `extractLinks` | `boolean` | `false` | Append a list of all outbound links found on the page |
+| `sandbox` | `boolean` | `false` | Wrap output in `EXTERNAL CONTENT` security delimiters |
+| `waitForNavigation` | `boolean` | `false` | Wait for a second navigation after initial load |
+| `navigationTimeout` | `number` | `10000` | Timeout for the extra navigation wait in ms |
+| `disableMedia` | `boolean` | `true` | Block images, stylesheets, fonts, and media |
+| `debug` | `boolean` | `false` | Show the browser window |
+
+**Returns (fetch mode):** Page content as Markdown (or HTML), prefixed with title and URL. Multiple pages separated by horizontal rules.
+
+**Returns (map mode):** JSON — `{ source, links: string[] }`
+
+---
+
+### `hunt_search`
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
 | `queries` | `string[]` | *(required)* | Search queries to run in parallel |
 | `limit` | `number` | `10` | Max results per query (up to 100) |
-| `timeout` | `number` | `30000` | Page-load timeout in ms |
+| `timeout` | `number` | `60000` | Page-load timeout in ms |
+| `fetchTopN` | `number` | `0` | Auto-fetch the top N result pages per query and append content (0–5) |
+| `noSaveState` | `boolean` | `false` | Skip saving/loading persistent browser session |
 | `locale` | `string` | `"en-US"` | BCP-47 locale for results |
-| `debug` | `boolean` | `false` | Show browser window |
+| `debug` | `boolean` | `false` | Show the browser window (use to solve CAPTCHA manually) |
+| `stateDir` | `string` | *(see below)* | Directory for persistent browser session files |
 
 **Returns:** JSON — `{ searches: [{ query, results: [{ title, link, snippet }] }] }`
 
----
+With `fetchTopN` > 0, also returns fetched page content sections appended below the JSON, each wrapped in `EXTERNAL CONTENT` security delimiters.
 
-### `hob_site`
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `url` | `string` | *(required)* | The URL to fetch |
-| `timeout` | `number` | `30000` | Page-load timeout in ms |
-| `waitUntil` | `string` | `"load"` | `load`, `domcontentloaded`, `networkidle`, or `commit` |
-| `extractContent` | `boolean` | `true` | Strip noise via Readability; return only main content |
-| `maxLength` | `number` | *(none)* | Truncate output to this many characters |
-| `returnHtml` | `boolean` | `false` | Return HTML instead of Markdown |
-| `waitForNavigation` | `boolean` | `false` | Wait for a second navigation |
-| `navigationTimeout` | `number` | `10000` | Timeout for the extra navigation wait |
-| `disableMedia` | `boolean` | `true` | Block images, fonts, and media |
-| `debug` | `boolean` | `false` | Show browser window |
-
-**Returns:** Page content as Markdown (or HTML), prefixed with title and URL.
+**Default `stateDir`:** `C:/c/apps/servers/hob_hunt_mcp/browser-state`
 
 ---
 
-### `hob_sites`
+## Why a Unified Server?
 
-Accepts all the same parameters as `hob_site`, plus:
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `urls` | `string[]` | *(required)* | URLs to fetch in parallel |
-
-**Returns:** Combined content from all pages, separated by horizontal rules.
-
----
-
-### `bed_bug_burgundy_big_boy_britches_browser_install`
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `withDeps` | `boolean` | `false` | Also install system-level Chromium dependencies (Linux) |
-| `force` | `boolean` | `false` | Reinstall even if Chromium is already present |
+`hunt_search` and `hunt_site` share the same Playwright Chromium dependency and the same stealth browser singleton. Running them as separate servers means two browser processes and two MCP config entries. Running them together means one of each — leaner, faster, and tidier.
 
 ---
 
@@ -173,8 +161,17 @@ Accepts all the same parameters as `hob_site`, plus:
 # Watch mode (auto-rebuild on save)
 npm run dev
 
-# Run directly
-npm start
+# Build
+npm run build
+
+# Run integration tests
+node test/run_tests.mjs
+
+# Warm up search session (first time)
+node test/warmup_search.mjs
+
+# Diagnose Google DOM structure (if search returns 0 results)
+node test/diagnose_google.mjs
 ```
 
 ---
@@ -189,7 +186,7 @@ MIT
 
 This project is built directly on the shoulders of two excellent open-source MCP servers by **[jae-jae](https://github.com/jae-jae)**:
 
-- **[g-search-mcp](https://github.com/jae-jae/g-search-mcp)** — the Google search tool that `hob_search` is derived from
-- **[fetcher-mcp](https://github.com/jae-jae/fetcher-mcp)** — the Playwright fetch server that `hob_site` and `hob_sites` are derived from
+- **[g-search-mcp](https://github.com/jae-jae/g-search-mcp)** — the Google search tool that `hunt_search` is derived from
+- **[fetcher-mcp](https://github.com/jae-jae/fetcher-mcp)** — the Playwright fetch server that `hunt_site` is derived from
 
-Both are well-designed, well-documented, and actively maintained. If you find value in `hob_hunt_mcp`, please consider starring those original repositories. The work here would not exist without them as I have no idea how to even make these damn things.
+Both are thoughtfully designed, well-documented, and actively maintained. The fingerprinting, stealth browser management, session persistence, and multi-selector extraction strategy that make this server actually work in the real world all trace back to jae-jae's original implementation. If you find value here, please consider starring those repositories. None of this would exist without them — and I say that as someone who did not fully understand what I was doing when I started.
