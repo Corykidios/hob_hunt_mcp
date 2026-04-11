@@ -82,11 +82,7 @@ await context.addInitScript(() => {
 });
 
 const page = await context.newPage();
-await page.route("**/*", (route) => {
-  const t = route.request().resourceType();
-  if (["image","font","media"].includes(t)) route.abort().catch(() => {});
-  else route.continue().catch(() => {});
-});
+// NOTE: Do NOT block images here — CAPTCHA grids must load for manual solving.
 
 const domain = GOOGLE_DOMAINS[Math.floor(Math.random() * GOOGLE_DOMAINS.length)];
 console.log("    Navigating to", domain, "...");
